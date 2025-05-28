@@ -1,8 +1,5 @@
 # -ecommerce_checkout
 
-- Frontend: [https://shaikh-007-eng.github.io/ecommerce-checkout/](https://shaikh-007-eng.github.io/ecommerce-checkout/)
-- Backend: [https://ecommerce-api.onrender.com](https://ecommerce-api.onrender.com)
-
 ## 📦 Test Card Info
 
 | Card Number | Result         |
