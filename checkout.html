@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout Page</title>
+</head>
+<body>
+  <h1>Checkout</h1>
+
+  <form id="checkoutForm">
+    <label>Full Name:</label><br />
+    <input type="text" id="fullName" required /><br />
+
+    <label>Email:</label><br />
+    <input type="email" id="email" required /><br />
+
+    <label>Phone Number:</label><br />
+    <input type="tel" id="phone" pattern="[0-9]{10}" required /><br />
+
+    <label>Address:</label><br />
+    <input type="text" id="address" required /><br />
+
+    <label>City:</label><br />
+    <input type="text" id="city" required /><br />
+
+    <label>State:</label><br />
+    <input type="text" id="state" required /><br />
+
+    <label>Zip Code:</label><br />
+    <input type="text" id="zip" pattern="[0-9]{5}" required /><br />
+
+    <label>Card Number:</label><br />
+    <input type="text" id="cardNumber" pattern="\d{16}" required /><br />
+
+    <label>Expiry Date (MM/YY):</label><br />
+    <input type="text" id="expiryDate" placeholder="MM/YY" required /><br />
+
+    <label>CVV:</label><br />
+    <input type="text" id="cvv" pattern="\d{3}" required /><br />
+
+    <h3>Order Summary:</h3>
+    <div id="orderSummary"></div>
+
+    <button type="submit">Pay Now</button>
+  </form>
+
+  <script>
+    // Load order data from localStorage (from landing page)
+    const orderData = JSON.parse(localStorage.getItem("orderData"));
+
+    if (!orderData) {
+      alert("No product selected. Redirecting to landing page.");
+      window.location.href = "index.html";
+    } else {
+      // Show order summary
+      const orderSummaryDiv = document.getElementById("orderSummary");
+      const subtotal = orderData.price * orderData.quantity;
+      orderSummaryDiv.innerHTML = `
+        <p>Product: ${orderData.product}</p>
+        <p>Variant: ${orderData.variant}</p>
+        <p>Quantity: ${orderData.quantity}</p>
+        <p>Subtotal: $${subtotal}</p>
+        <p>Total: $${subtotal}</p>
+      `;
+    }
+
+    // Form submission
+    document.getElementById("checkoutForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      // Basic validation for expiry date: must be future
+      const expiry = document.getElementById("expiryDate").value;
+      if (!isExpiryValid(expiry)) {
+        alert("Expiry date must be a future date in MM/YY format.");
+        return;
+      }
+
+      // Collect form data
+      const formData = {
+        fullName: document.getElementById("fullName").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        state: document.getElementById("state").value,
+        zip: document.getElementById("zip").value,
+        cardNumber: document.getElementById("cardNumber").value,
+        expiryDate: expiry,
+        cvv: document.getElementById("cvv").value,
+        orderData: orderData
+      };
+
+      // TODO: Send this data to backend API and handle response
+
+      // For now, just log the data and simulate redirect
+      console.log("Order Data:", formData);
+
+      // Redirect to thank you page
+      window.location.href = "thankyou.html";
+    });
+
+    function isExpiryValid(expiry) {
+      if (!/^\d{2}\/\d{2}$/.test(expiry)) return false;
+      const [month, year] = expiry.split("/").map(Number);
+      if (month < 1 || month > 12) return false;
+
+      const now = new Date();
+      const currentYear = now.getFullYear() % 100; // last 2 digits
+      const currentMonth = now.getMonth() + 1;
+
+      if (year < currentYear) return false;
+      if (year === currentYear && month < currentMonth) return false;
+
+      return true;
+    }
+  </script>
+</body>
+</html>

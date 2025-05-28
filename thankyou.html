@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Thank You!</title>
+</head>
+<body>
+  <h1>Thank You for Your Order!</h1>
+
+  <p>Order Number: <span id="orderNumber"></span></p>
+  <p>Product: <span id="productName"></span></p>
+  <p>Variant: <span id="variant"></span></p>
+  <p>Quantity: <span id="quantity"></span></p>
+  <p>Total: $<span id="total"></span></p>
+
+  <h2>Customer Details</h2>
+  <p>Full Name: <span id="fullName"></span></p>
+  <p>Email: <span id="email"></span></p>
+  <p>Phone: <span id="phone"></span></p>
+  <p>Address: <span id="address"></span></p>
+  <p>City: <span id="city"></span></p>
+  <p>State: <span id="state"></span></p>
+  <p>Zip: <span id="zip"></span></p>
+
+  <script>
+    // Get orderId from URL like thankyou.html?orderId=12345
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('orderId');
+
+    if(orderId) {
+      fetch(`http://localhost:5000/api/orders/${orderId}`)
+        .then(response => response.json())
+        .then(data => {
+          const order = data.order;
+          document.getElementById('orderNumber').textContent = order.orderNumber;
+          document.getElementById('productName').textContent = order.product;
+          document.getElementById('variant').textContent = order.variant;
+          document.getElementById('quantity').textContent = order.quantity;
+          document.getElementById('total').textContent = order.total;
+          document.getElementById('fullName').textContent = order.fullName;
+          document.getElementById('email').textContent = order.email;
+          document.getElementById('phone').textContent = order.phone;
+          document.getElementById('address').textContent = order.address;
+          document.getElementById('city').textContent = order.city;
+          document.getElementById('state').textContent = order.state;
+          document.getElementById('zip').textContent = order.zip;
+        })
+        .catch(err => {
+          console.error('Error fetching order:', err);
+          alert('Failed to load order details.');
+        });
+    } else {
+      alert('No order ID found in URL.');
+    }
+  </script>
+</body>
+</html>
